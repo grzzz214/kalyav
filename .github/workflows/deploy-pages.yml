@@ -1,0 +1,52 @@
+name: Déployer sur GitHub Pages
+
+on:
+  push:
+    branches: [main, claude/fitness-nutrition-coach-app-diorj1]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Vérifications
+        run: |
+          npx tsc --noEmit
+          npm test
+
+      - name: Build web
+        env:
+          EXPO_BASE_URL: /${{ github.event.repository.name }}
+          CI: 1
+        run: |
+          npx expo export --platform web --output-dir dist
+          # navigation directe vers une page (ex. /kalyav/sport) : l'app monopage prend le relais
+          cp dist/index.html dist/404.html
+          # Expo génère des dossiers commençant par « _ » : Jekyll doit être désactivé
+          touch dist/.nojekyll
+
+      - name: Publier sur la branche gh-pages
+        run: |
+          cd dist
+          git init -q -b gh-pages
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "Déploiement de ${GITHUB_SHA}"
+          git push -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git" gh-pages

@@ -15,6 +15,12 @@ npx tsc --noEmit        # typecheck
 npx expo lint           # lint
 ```
 
+### Version web en ligne (GitHub Pages)
+
+À chaque push sur `main` (ou la branche de développement), le workflow `.github/workflows/deploy-pages.yml` vérifie le code, construit la version web et la publie sur la branche `gh-pages`.
+Activation, une seule fois : **Settings → Pages → Source : Deploy from a branch → Branch : `gh-pages` / `(root)` → Save**.
+L'app est alors servie sur `https://<utilisateur>.github.io/kalyav/`.
+
 Le scanner caméra et les notifications nécessitent un appareil (Expo Go ou development build). Sur le web, le code-barres se saisit à la main.
 
 ## Fonctionnalités
