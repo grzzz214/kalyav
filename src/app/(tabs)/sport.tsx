@@ -121,7 +121,7 @@ export default function Sport() {
                   {dayLabel(s.dayIndex)} {shortDate(s.date)} {done ? '· fait ✓' : s.date < date ? '· manquée' : ''}
                 </Text>
                 <Text style={{ ...font.h3, color: colors.text, marginTop: 2 }}>{s.title}</Text>
-                <Muted numberOfLines={1}>{s.exercises.map((e) => getExercise(e.exerciseId).name).join(' · ')}</Muted>
+                <Muted>{s.exercises.map((e) => getExercise(e.exerciseId).name).join(' · ')}</Muted>
               </View>
               <Text style={{ ...font.small, color: colors.textDim }}>{s.durationMin} min</Text>
             </Row>

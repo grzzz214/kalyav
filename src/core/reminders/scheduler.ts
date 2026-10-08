@@ -1,7 +1,6 @@
 import type { AppState, ISODate, ReminderConfig, ReminderKind, ReminderStats, UserProfile } from '../types';
-import { addDays, formatTime, fromISODate, minutesOfDay, shiftTime } from '../utils/date';
+import { addDays, formatTime, fromISODate, minutesOfDay, shiftTime, startOfWeek } from '../utils/date';
 import { sessionForDate } from '../training/programGenerator';
-import { startOfWeek } from '../utils/date';
 
 /** Nombre maximal de notifications par jour : on ne spamme jamais. */
 export const MAX_PER_DAY = 5;

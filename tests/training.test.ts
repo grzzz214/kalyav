@@ -140,3 +140,11 @@ describe('performances', () => {
     expect(performanceTrend(logs)!).toBeLessThan(-0.03);
   });
 });
+
+describe('semaine de démarrage', () => {
+  it('ne planifie aucune séance avant l’inscription', () => {
+    const plan = generateWeeklyPlan(makeProfile({ sessionsPerWeek: 3 }), '2026-10-05', { startFrom: '2026-10-08' });
+    expect(plan.sessions.length).toBeGreaterThan(0);
+    for (const s of plan.sessions) expect(s.date >= '2026-10-08').toBe(true);
+  });
+});

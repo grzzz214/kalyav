@@ -114,7 +114,7 @@ export const useStore = create<Store>()(
             profile,
             weights: [{ date, kg: profile.weightKg }],
             reminders: defaultReminders(profile),
-            plans: [generateWeeklyPlan(profile, startOfWeek(date))],
+            plans: [generateWeeklyPlan(profile, startOfWeek(date), { startFrom: date })],
           });
         },
 
@@ -210,6 +210,7 @@ export const useStore = create<Store>()(
               plans: [
                 ...st.plans,
                 generateWeeklyPlan(s2.profile!, current, {
+                  startFrom: date,
                   volumeModifier: s2.adjustments.volumeModifier,
                   sessionReduction: s2.adjustments.sessionReduction,
                 }),

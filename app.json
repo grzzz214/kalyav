@@ -1,6 +1,54 @@
 {
-  "plugins": [
-    "expo-router",
-    "expo-sharing"
-  ]
+  "expo": {
+    "name": "Kalyav",
+    "slug": "kalyav",
+    "scheme": "kalyav",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "backgroundColor": "#0A0B0D",
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "app.kalyav.coach",
+      "infoPlist": {
+        "NSCameraUsageDescription": "La caméra sert à scanner le code-barres des aliments."
+      }
+    },
+    "android": {
+      "package": "app.kalyav.coach",
+      "adaptiveIcon": {
+        "backgroundColor": "#0A0B0D",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "favicon": "./assets/favicon.png",
+      "output": "single"
+    },
+    "plugins": [
+      "expo-router",
+      "expo-sharing",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "La caméra sert à scanner le code-barres des aliments.",
+          "recordAudioAndroid": false
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "color": "#C8FF2E"
+        }
+      ],
+      "expo-font"
+    ],
+    "experiments": {
+      "typedRoutes": false
+    }
+  }
 }

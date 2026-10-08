@@ -26,12 +26,12 @@ function notify(title: string, msg: string) {
 }
 
 function RestTimer({ seconds, onDone }: { seconds: number; onDone: () => void }) {
+  // le parent remonte le composant (key) à chaque nouveau repos
   const [left, setLeft] = useState(seconds);
   useEffect(() => {
-    setLeft(seconds);
     const t = setInterval(() => setLeft((l) => l - 1), 1000);
     return () => clearInterval(t);
-  }, [seconds]);
+  }, []);
   useEffect(() => {
     if (left <= 0) onDone();
   }, [left, onDone]);
@@ -59,18 +59,16 @@ export default function WorkoutScreen() {
   const isToday = planned?.date === data?.date;
   const initial = isToday && data?.briefing.session?.id === id ? data.briefing.session : planned;
 
-  const [session, setSession] = useState<PlannedSession | undefined>(initial);
+  // la séance suit le plan tant que l'utilisateur ne l'a pas modifiée ici
+  const [edited, setSession] = useState<PlannedSession | undefined>();
+  const session = edited ?? initial;
   const [logs, setLogs] = useState<Record<number, SetLog[]>>({});
   const [swapIndex, setSwapIndex] = useState<number | null>(null);
   const [swapReason, setSwapReason] = useState<SwapReason | null>(null);
-  const [rest, setRest] = useState<number | null>(null);
+  const [rest, setRest] = useState<{ sec: number; at: number } | null>(null);
   const [finishing, setFinishing] = useState(false);
   const [rpe, setRpe] = useState<number | undefined>();
   const startedAt = useRef<number | null>(null);
-
-  useEffect(() => {
-    if (!session && initial) setSession(initial);
-  }, [initial, session]);
 
   if (!data || !session) {
     return (
@@ -99,7 +97,7 @@ export default function WorkoutScreen() {
     const sets = [...setsFor(i)];
     sets[j] = { ...sets[j], done: !sets[j].done };
     setLogs({ ...logs, [i]: sets });
-    if (sets[j].done && session.exercises[i].restSec > 0) setRest(session.exercises[i].restSec);
+    if (sets[j].done && session.exercises[i].restSec > 0) setRest({ sec: session.exercises[i].restSec, at: Date.now() });
   };
 
   const editSet = (i: number, j: number, patch: Partial<SetLog>) => {
@@ -382,7 +380,7 @@ export default function WorkoutScreen() {
         {!canLog ? <Muted style={{ textAlign: 'center' }}>Séance à venir : tu pourras l’enregistrer le jour J.</Muted> : null}
         <View style={{ height: rest ? 60 : 0 }} />
       </Screen>
-      {rest ? <RestTimer seconds={rest} onDone={() => setRest(null)} /> : null}
+      {rest ? <RestTimer key={rest.at} seconds={rest.sec} onDone={() => setRest(null)} /> : null}
     </>
   );
 }

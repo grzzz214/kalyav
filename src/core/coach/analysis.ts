@@ -1,9 +1,8 @@
-import type { AppState, Difficulty, ISODate, PainArea, WeightEntry } from '../types';
+import type { AppState, Difficulty, ISODate, NutritionTargets, PainArea, WeightEntry } from '../types';
 import { addDays, daysBetween, lastNDays } from '../utils/date';
 import { ema, linearSlope, mean } from '../utils/stats';
 import { computeTargets } from '../nutrition/calculator';
 import { performanceTrend } from '../training/performance';
-import type { NutritionTargets } from '../types';
 
 /**
  * Photographie des tendances de l'utilisateur. Le coach raisonne toujours
@@ -68,6 +67,8 @@ export interface Analysis {
   difficulties: { kind: Difficulty; count: number }[];
   /** 0 – 1 : régularité globale (suivi nutrition, séances, check-ins) */
   adherence: number;
+  /** jours complets d'historique depuis l'inscription */
+  historyDays: number;
 }
 
 function weightSeries(state: AppState): WeightEntry[] {
@@ -160,11 +161,11 @@ export function analyze(state: AppState, today: ISODate): Analysis {
     .forEach((c) => diffCounts.set(c.difficulty, (diffCounts.get(c.difficulty) ?? 0) + 1));
 
   const completion14 = planned14 ? Math.min(done14List.length / planned14, 1) : undefined;
-  const adherenceParts = [
-    logged14.length / 14,
-    completion14 ?? 0.7,
-    Math.min(state.morningCheckIns.filter((c) => c.date > addDays(today, -14)).length / 14, 1),
-  ];
+  // la régularité se mesure sur l'historique réel : un nouvel inscrit n'est pas pénalisé
+  const historyDays = Math.max(0, daysBetween(profile.createdAt.slice(0, 10), today));
+  const span = Math.min(14, Math.max(1, historyDays));
+  const checkIns14 = state.morningCheckIns.filter((c) => c.date > addDays(today, -14) && c.date < today).length;
+  const adherenceParts = [Math.min(logged14.length / span, 1), completion14 ?? 0.7, Math.min(checkIns14 / span, 1)];
 
   return {
     today,
@@ -221,6 +222,7 @@ export function analyze(state: AppState, today: ISODate): Analysis {
     },
     difficulties: [...diffCounts.entries()].map(([kind, count]) => ({ kind, count })).sort((a, b) => b.count - a.count),
     adherence: mean(adherenceParts) ?? 0,
+    historyDays,
   };
 }
 

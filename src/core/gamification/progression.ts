@@ -1,6 +1,5 @@
-import type { AppState, ISODate } from '../types';
+import type { AppState, ISODate, NutritionTargets } from '../types';
 import { addDays, dateRange, startOfWeek } from '../utils/date';
-import type { NutritionTargets } from '../types';
 
 /**
  * Système de progression : on récompense la RÉGULARITÉ et les HABITUDES,

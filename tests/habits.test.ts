@@ -54,7 +54,7 @@ describe('rappels intelligents', () => {
     let stats: ReminderStats | undefined;
     for (const d of dateRange(addDays(TODAY, -8), addDays(TODAY, -1))) stats = recordScheduled(stats, d);
     // l'utilisateur boit plutôt vers 15 h, pas à 10 h
-    for (const d of dateRange(addDays(TODAY, -3), addDays(TODAY, -1))) stats = { ...stats!, actualTimes: [...stats!.actualTimes, '15:10'] };
+    for (let k = 0; k < 3; k++) stats = { ...stats!, actualTimes: [...stats!.actualTimes, '15:10'] };
     const state = makeState({ reminderStats: { water: stats } });
     const s = reminderSuggestions(state, TODAY);
     expect(s[0]?.kind).toBe('water');

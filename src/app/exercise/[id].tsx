@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Animated, Easing, Pressable, Text, View } from 'react-native';
 import { Stack, useLocalSearchParams } from 'expo-router';
 import { findExercise, type Pattern } from '../../core/training/exercises';
@@ -30,7 +30,7 @@ export default function ExerciseDemo() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const ex = findExercise(id);
   const [step, setStep] = useState(0);
-  const pulse = useRef(new Animated.Value(0)).current;
+  const pulse = useState(() => new Animated.Value(0))[0];
 
   useEffect(() => {
     const loop = Animated.loop(

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Animated, Easing, StyleSheet, Text, View, type LayoutChangeEvent } from 'react-native';
 import Svg, { Circle, Defs, Line, LinearGradient, Path, Rect, Stop, Text as SvgText } from 'react-native-svg';
 import { colors, font, radius, space } from '../theme';
@@ -21,7 +21,7 @@ export function Ring({
 }) {
   const r = (size - stroke) / 2;
   const c = 2 * Math.PI * r;
-  const anim = useRef(new Animated.Value(0)).current;
+  const anim = useState(() => new Animated.Value(0))[0];
   useEffect(() => {
     Animated.timing(anim, { toValue: Math.max(0, Math.min(1, value)), duration: 900, easing: Easing.out(Easing.cubic), useNativeDriver: false }).start();
   }, [value, anim]);
@@ -50,7 +50,7 @@ export function Ring({
 
 /** Barre de progression horizontale animée. */
 export function ProgressBar({ value, color = colors.accent, height = 8, track = colors.surfaceAlt }: { value: number; color?: string; height?: number; track?: string }) {
-  const anim = useRef(new Animated.Value(0)).current;
+  const anim = useState(() => new Animated.Value(0))[0];
   useEffect(() => {
     Animated.timing(anim, { toValue: Math.max(0, Math.min(1, value)), duration: 700, easing: Easing.out(Easing.cubic), useNativeDriver: false }).start();
   }, [value, anim]);

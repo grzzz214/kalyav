@@ -1,14 +1,17 @@
 import React from 'react';
 import { Redirect, Tabs } from 'expo-router';
+import type { ColorValue } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useStore } from '../../data/store';
 import { colors } from '../../ui/theme';
 
 type IconName = React.ComponentProps<typeof Ionicons>['name'];
 
-const icon =
-  (name: IconName, active: IconName) =>
-  ({ color, focused }: { color: string; focused: boolean }) => <Ionicons name={focused ? active : name} size={24} color={color} />;
+function icon(name: IconName, active: IconName) {
+  return function TabIcon({ color, focused }: { color: ColorValue; focused: boolean }) {
+    return <Ionicons name={focused ? active : name} size={24} color={color} />;
+  };
+}
 
 export default function TabLayout() {
   const hasProfile = useStore((s) => !!s.profile);

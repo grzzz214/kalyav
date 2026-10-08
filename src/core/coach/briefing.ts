@@ -128,7 +128,7 @@ export function dailyBriefing(state: AppState, a: Analysis, snap: DailySnapshot,
     if (a.training.consecutiveTrainingDays >= 3) coachLine = `${a.training.consecutiveTrainingDays} jours d’entraînement d’affilée. Pense à récupérer.`;
     else if ((a.nutrition.proteinRatio7 ?? 1) < 0.85) coachLine = 'Ton point clé du moment : les protéines. Ajoute une source à chaque repas.';
     else if (a.weight.plateauDays >= 14) coachLine = 'Plateau en cours : focus régularité cette semaine, pas de panique.';
-    else if (a.adherence >= 0.75) coachLine = 'Ta régularité paie. Continue exactement comme ça.';
+    else if (a.historyDays >= 3 && a.adherence >= 0.75) coachLine = 'Ta régularité paie. Continue exactement comme ça.';
     else coachLine = 'Une action à la fois. Commence par la prochaine.';
   }
 

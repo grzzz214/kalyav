@@ -323,6 +323,8 @@ export interface PlanOptions {
   sessionReduction?: number;
   rationale?: string[];
   seed?: number;
+  /** semaine de démarrage : aucune séance planifiée avant cette date */
+  startFrom?: string;
 }
 
 export function generateWeeklyPlan(profile: UserProfile, weekStart: string, opts: PlanOptions = {}): WeeklyPlan {
@@ -332,7 +334,9 @@ export function generateWeeklyPlan(profile: UserProfile, weekStart: string, opts
     1,
     6,
   );
-  const days = chooseTrainingDays(profile.availableDays.length ? profile.availableDays : [0, 2, 4], count);
+  const firstDay = opts.startFrom && opts.startFrom > weekStart ? weekdayIndex(opts.startFrom) : 0;
+  const available = (profile.availableDays.length ? profile.availableDays : [0, 2, 4]).filter((d) => d >= firstDay);
+  const days = chooseTrainingDays(available, Math.min(count, available.length));
   const types = sessionTypesFor(profile, days.length);
   const weekSeed = opts.seed ?? Math.floor(new Date(weekStart).getTime() / (7 * 86_400_000));
 
